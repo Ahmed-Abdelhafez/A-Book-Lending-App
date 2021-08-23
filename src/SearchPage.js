@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import * as BooksAPI from './BooksAPI'
+import Book from './Book'
 
 class SearchPage extends Component {
     constructor(props){
@@ -13,15 +14,39 @@ class SearchPage extends Component {
 
     handleChange = (query) => {
         if(query){
-            BooksAPI.search(query).then(books => {
-                if(Array.isArray(books)) {
+            BooksAPI.search(query).then(booksData => {
+                if(!Array.isArray(booksData)) {
                     this.setState({
                         searchResult: []
                     })
                     return
                 }
+                this.setState({
+                    searchResult: booksData.map(book => {
+                        const found = this.props.books.find(existingBook => book.id === existingBook.id)
+                        if(found)
+                            book.shelf = found.shelf
+                        else
+                            book.shelf = 'none'
+                        
+                        return book
+                    })
+                })
             })
         }
+    }
+
+    onChangeBookCategory = (book, shelf) => {
+        const found = this.state.searchResult.find(b => book.id === b.id)
+            this.setState(state => ({
+                searchResult: state.searchResult.map(existingBook => {
+                    if(existingBook.id === book.id){
+                        existingBook.shelf = shelf
+                    }
+                    return existingBook
+                })
+            }))
+        this.props.onChangeBookCategory(found, shelf)
     }
     render() {
         return(
@@ -36,7 +61,19 @@ class SearchPage extends Component {
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid"></ol>
+              <ol className="books-grid">
+                {this.state.searchResult.length > 0 && (this.state.searchResult.map((book) => (
+                    <Book 
+                    id={book.id}
+                    title={book.title}
+                    imageLink={book.imagelink}
+                    shelf={book.shelf}
+                    author={book.author}
+                    onChangeBookCategory={this.onChangeBookCategory}
+                    />
+                ))
+                )}
+              </ol>
             </div>
           </div>
         )

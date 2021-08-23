@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { Component } from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 import ListBooks from './ListBooks'
 import SearchPage from './SearchPage';
-import { Link, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
-class BooksApp extends React.Component {
+class BooksApp extends Component {
   state = {
     query: '',
     books: []
@@ -18,8 +18,20 @@ class BooksApp extends React.Component {
     })
   }
 
+  componentDidUpdate() {
+    BooksAPI.getAll().then(books => {
+      this.setState({
+        books
+      })
+    }) 
+  }
   onChangeBookCategory = (book, category) => {
       BooksAPI.update(book, category).then(books => {
+        books = [].concat(
+          books.currentlyReading,
+          books.wantToRead,
+          books.read
+        )
         this.setState(state => {
           let bookUpdate = state.books.find(existingBook => book.id === existingBook.id)
         
@@ -29,6 +41,10 @@ class BooksApp extends React.Component {
           }
 
           bookUpdate.category = category
+
+          state.books = books.map(bookId => state.books.find(book => book.id === bookId))
+
+          return state
         })
       })
   }
@@ -36,7 +52,7 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-
+          
           <Route path='/search' render={() => (
             <SearchPage 
             books={this.state.books}
