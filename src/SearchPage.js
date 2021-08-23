@@ -13,6 +13,7 @@ class SearchPage extends Component {
     }
 
     handleChange = (query) => {
+        
         if(query){
             BooksAPI.search(query).then(booksData => {
                 if(!Array.isArray(booksData)) {
@@ -32,6 +33,10 @@ class SearchPage extends Component {
                         return book
                     })
                 })
+            })
+        } else {
+            this.setState({
+                searchResult:[]
             })
         }
     }
@@ -66,7 +71,7 @@ class SearchPage extends Component {
                     <Book 
                     id={book.id}
                     title={book.title}
-                    imageLink={book.imagelink}
+                    imageLinks={book.imageLinks}
                     shelf={book.shelf}
                     author={book.author}
                     onChangeBookCategory={this.onChangeBookCategory}
