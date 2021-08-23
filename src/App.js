@@ -18,13 +18,7 @@ class BooksApp extends Component {
     })
   }
 
-  componentDidUpdate() {
-    BooksAPI.getAll().then(books => {
-      this.setState({
-        books
-      })
-    }) 
-  }
+
   onChangeBookCategory = (book, category) => {
       BooksAPI.update(book, category).then(books => {
         books = [].concat(
@@ -42,7 +36,11 @@ class BooksApp extends Component {
 
           bookUpdate.category = category
 
-          state.books = books.map(bookId => state.books.find(book => book.id === bookId))
+          this.setState(state => ({
+            books: state.books.filter(existingBook => existingBook.id !== book.id).concat([ book ])
+            }))
+
+            
 
           return state
         })
