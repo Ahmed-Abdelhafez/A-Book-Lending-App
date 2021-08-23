@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 class Book extends Component {
 
     render() {
-        const { title, author, id, shelf, onChangeBookCategory, imageLinks } = this.props
+        const { title, authors, id, shelf, onChangeBookCategory, imageLinks } = this.props
         return(
             <div className="book">
             <div className="book-top">
@@ -25,8 +25,8 @@ class Book extends Component {
             </div>
             <div className="book-title">{title}</div>
             <div className="book-authors">
-            {(author || []).map((author, id) => (
-            <div key={id} className="book-authors"> {Array.isArray(author)?author.join(', '):''} </div>)
+            {(authors || []).map((author, id) => (
+            <div key={id} className="book-authors"> {Array.isArray(authors)?authors.join(', '):''} </div>)
             )}
           </div>
           </div>

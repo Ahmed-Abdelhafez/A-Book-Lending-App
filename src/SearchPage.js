@@ -73,7 +73,7 @@ class SearchPage extends Component {
                     title={book.title}
                     imageLinks={book.imageLinks}
                     shelf={book.shelf}
-                    author={book.author}
+                    authors={book.authors}
                     onChangeBookCategory={this.onChangeBookCategory}
                     />
                 ))
